@@ -20,11 +20,11 @@ public class Peg {
     public static final int DISK_HEIGHT_DP = 18;
 
     /**
-     * @param res          image resource for the background of the Pegs
-     * @param center       the x-value for the center of the Peg
-     * @param height       the height of the Peg
-     * @param panelHeight  the height of the panel the Peg is drawn in
-     * @param panelWidth   the width of the panel the Peg is drawn in
+     * @param res         image resource for the background of the Pegs
+     * @param center      the x-value for the center of the Peg
+     * @param height      the height of the Peg
+     * @param panelHeight the height of the panel the Peg is drawn in
+     * @param panelWidth  the width of the panel the Peg is drawn in
      */
     Peg(Bitmap res, int center, int height, int panelHeight, int panelWidth) {
         this.height = height;
@@ -42,8 +42,9 @@ public class Peg {
     /**
      * Initially creates the disks at the beginning of a game.
      * Should only be called on the left Peg to start all disks at that point.
-     * @param numDisks      how many disks to initially create
-     * @param maxDiskSize   the size of the largest Disk
+     *
+     * @param numDisks    how many disks to initially create
+     * @param maxDiskSize the size of the largest Disk
      */
     void populateDisks(int numDisks, int maxDiskSize, int spacing) {
         n = numDisks;
@@ -65,35 +66,36 @@ public class Peg {
      */
     void pickUp() {
         if (n > 0) {
-            disks[n-1].r.bottom = panelHeight - height;
-            disks[n-1].r.top = panelHeight - (height + GamePanel.dpToPx(DISK_HEIGHT_DP));
+            disks[n - 1].r.bottom = panelHeight - height;
+            disks[n - 1].r.top = panelHeight - (height + GamePanel.dpToPx(DISK_HEIGHT_DP));
         }
     }
 
     /**
      * Move the top Disk from lastPeg to this Peg.
-     * @param lastPeg   the Peg where the Disk was located most recently
+     *
+     * @param lastPeg the Peg where the Disk was located most recently
      */
     void move(Peg lastPeg) {
         n++;
-        disks[n-1] = lastPeg.disks[lastPeg.n-1];
-        lastPeg.disks[lastPeg.n-1] = null;
+        disks[n - 1] = lastPeg.disks[lastPeg.n - 1];
+        lastPeg.disks[lastPeg.n - 1] = null;
         lastPeg.n--;
-        disks[n-1].r.left = center - disks[n-1].getWidth() / 2;
-        disks[n-1].r.right = center + disks[n-1].getWidth() / 2;
+        disks[n - 1].r.left = center - disks[n - 1].getWidth() / 2;
+        disks[n - 1].r.right = center + disks[n - 1].getWidth() / 2;
     }
 
     /**
      * If allowed, reposition the Disk to its proper position on top of other Disks. If this move violates
      * the rules, place the Disk back on the Peg it was picked up from.
-     * @param startPeg   the Peg where the Disk was originally picked up from
+     *
+     * @param startPeg the Peg where the Disk was originally picked up from
      */
     void drop(Peg startPeg) {
         if (!checkMove()) {
             startPeg.move(this);
             startPeg.drop(startPeg);
-        }
-        else {
+        } else {
             if (n == 1) {
                 disks[n - 1].r.bottom = panelHeight;
                 disks[n - 1].r.top = panelHeight - GamePanel.dpToPx(DISK_HEIGHT_DP);
@@ -106,15 +108,17 @@ public class Peg {
 
     /**
      * Check if a move complies with the rules.
-     * @return   whether the top Disk is smaller than the Disk directly below it
+     *
+     * @return whether the top Disk is smaller than the Disk directly below it
      */
     boolean checkMove() {
-        return (n <= 1 || disks[n-2].getWidth() > disks[n-1].getWidth());
+        return (n <= 1 || disks[n - 2].getWidth() > disks[n - 1].getWidth());
     }
 
     /**
      * Get the size of the Peg.
-     * @return   n: the number of Disks on the Peg
+     *
+     * @return n: the number of Disks on the Peg
      */
     int getSize() {
         return n;
@@ -129,7 +133,8 @@ public class Peg {
 
     /**
      * Set the number of disks
-     * @param n  the number of disks
+     *
+     * @param n the number of disks
      */
     void setSize(int n) {
         this.n = n;
@@ -137,7 +142,8 @@ public class Peg {
 
     /**
      * Re-initialize the disks in the disk array
-     * @param disks  the array of disks from previous game
+     *
+     * @param disks the array of disks from previous game
      */
     void setDisks(Disk[] disks) {
         for (int i = 0; i < n; i++) {
@@ -148,7 +154,7 @@ public class Peg {
     void resetDisks() {
         disks[0].resize(dst.bottom, dst.bottom + GamePanel.dpToPx(DISK_HEIGHT_DP));
         for (int i = 1; i < n; i++) {
-            disks[i].resize(disks[i-1].r.top, disks[i-1].r.top + GamePanel.dpToPx(DISK_HEIGHT_DP));
+            disks[i].resize(disks[i - 1].r.top, disks[i - 1].r.top + GamePanel.dpToPx(DISK_HEIGHT_DP));
         }
     }
 }

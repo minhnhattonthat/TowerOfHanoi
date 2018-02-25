@@ -5,9 +5,7 @@ import android.content.res.Configuration;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.support.annotation.Nullable;
 import android.util.DisplayMetrics;
-import android.view.MotionEvent;
 import android.view.View;
 
 /**
@@ -47,101 +45,7 @@ public class GamePanel extends View {
      *
      * @param context       .
      * @param numberOfDisks the number of disks
-     * @param pegs          array of pegs from previous game
-     * @param moves         the number of moves from previous game
      */
-    public GamePanel(Context context, int numberOfDisks, @Nullable Peg[] pegs, int moves) {
-        super(context);
-        setFocusable(true);
-        setWillNotDraw(false);
-        numDisks = numberOfDisks;
-        this.moves = moves;
-//        mainActivity = (GameActivity) context;
-        mContext = context;
-        gameStarted = false;
-        density = context.getResources().getDisplayMetrics().densityDpi;
-
-        setBackgroundColor(Color.TRANSPARENT);
-
-        if (pegs != null) {
-            newGame = false;
-            diskArrays = new Disk[][]{pegs[0].getDisks(), pegs[1].getDisks(), pegs[2].getDisks()};
-            sizes = new int[]{pegs[0].getSize(), pegs[1].getSize(), pegs[2].getSize()};
-        } else {
-            newGame = true;
-        }
-
-        // Handle touch events for game moves
-        this.setOnTouchListener(new OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                        if (!gameStarted) {
-                            onGameStartedListener.onGameStarted();
-                            gameStarted = true;
-                        }
-                        if (event.getX() < getWidth() / 3) {
-                            pegA.pickUp();
-                            lastPeg = pegA;
-                            startPeg = pegA;
-                            zone = 0;
-                        } else if (event.getX() < 2 * getWidth() / 3) {
-                            pegB.pickUp();
-                            lastPeg = pegB;
-                            startPeg = pegB;
-                            zone = 1;
-                        } else {
-                            pegC.pickUp();
-                            lastPeg = pegC;
-                            startPeg = pegC;
-                            zone = 2;
-                        }
-                        if (lastPeg.getSize() == 0)
-                            return false;
-                        invalidate();
-                        return true;
-                    case MotionEvent.ACTION_MOVE:
-                        if (zone != 0 && event.getX() < getWidth() / 3) {
-                            pegA.move(lastPeg);
-                            lastPeg = pegA;
-                            zone = 0;
-                        } else if (zone != 1 && event.getX() > getWidth() / 3 && event.getX() < 2 * getWidth() / 3) {
-                            pegB.move(lastPeg);
-                            lastPeg = pegB;
-                            zone = 1;
-                        } else if (zone != 2 && event.getX() > 2 * getWidth() / 3) {
-                            pegC.move(lastPeg);
-                            lastPeg = pegC;
-                            zone = 2;
-                        }
-                        invalidate();
-                        return true;
-                    case MotionEvent.ACTION_UP:
-                        if (event.getX() < getWidth() / 3) {
-                            if (pegA.checkMove() && startPeg != pegA)
-                                GamePanel.this.moves++;
-                            pegA.drop(startPeg);
-                        } else if (event.getX() < 2 * getWidth() / 3) {
-                            if (pegB.checkMove() && startPeg != pegB)
-                                GamePanel.this.moves++;
-                            pegB.drop(startPeg);
-                        } else {
-                            if (pegC.checkMove() && startPeg != pegC)
-                                GamePanel.this.moves++;
-                            pegC.drop(startPeg);
-                        }
-//                        mainActivity.updateText(moves);
-                        update();
-                        invalidate();
-                        performClick();
-                        return true;
-                }
-                return false;
-            }
-        });
-    }
-
     public GamePanel(Context context, int numberOfDisks) {
         super(context);
         setWillNotDraw(false);
